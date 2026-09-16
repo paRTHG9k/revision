@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Body Explorer Adventure</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:'Comic Sans MS',sans-serif;
+    background:linear-gradient(to bottom,#87CEFA,#EAF8FF);
+    text-align:center;
+    min-height:100vh;
+}
+
+header{
+    background:#4CAF50;
+    color:white;
+    padding:15px;
+    font-size:2rem;
+    font-weight:bold;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.15);
+}
+
+.score-area{
+    display:flex;
+    justify-content:space-around;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.score-box{
+    background:#fff9c4;
+    padding:10px 20px;
+    border-radius:15px;
+    font-size:1.2rem;
+    font-weight:bold;
+}
+
+#question{
+    font-size:1.8rem;
+    margin:20px 0;
+    color:#333;
+    min-height:80px;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    margin-top:25px;
+}
+
+.option{
+    background:#FFD54F;
+    border:none;
+    padding:15px;
+    border-radius:18px;
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    transform:scale(1.05);
+}
+
+.option:disabled{
+    opacity:0.75;
+    cursor:not-allowed;
+}
+
+.correct{
+    background:#81C784 !important;
+    color:#000;
+}
+
+.wrong{
+    background:#EF5350 !important;
+    color:white;
+}
+
+#giveUpBtn{
+    margin-top:15px;
+    background:#FFB74D;
+}
+
+#message{
+    margin-top:20px;
+    font-size:1.4rem;
+    font-weight:bold;
+    min-height:50px;
+}
+
+.progress{
+    width:100%;
+    background:#ddd;
+    height:25px;
+    border-radius:20px;
+    overflow:hidden;
+    margin:20px 0;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:linear-gradient(to right,#4CAF50,#8BC34A);
+    transition:width 0.4s;
+}
+
+#badge{
+    font-size:1.5rem;
+    margin-top:10px;
+}
+
+.character{
+    font-size:70px;
+}
+
+.review{
+    margin-top:25px;
+    font-size:1rem;
+    color:#666;
+}
+
+footer{
+    margin-top:20px;
+    font-size:14px;
+    color:#444;
+}
+
+.play-again{
+    margin-top:20px;
+    width:250px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+🤖 Body Explorer Adventure
+</header>
+
+<div class="container">
+
+<div class="character">
+🧒⭐🤖
+</div>
+
+<div class="score-area">
+
+    <div class="score-box">
+        ⭐ Score:
+        <span id="score">0</span>
+    </div>
+
+    <div class="score-box">
+        📚 Progress:
+        <span id="count">0 / 0</span>
+    </div>
+
+</div>
+
+<div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div id="badge">
+🏅 Beginner Explorer
+</div>
+
+<div class="card">
+
+    <div id="question">
+        Loading questions...
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <button id="giveUpBtn" class="option">
+        😅 I Give Up
+    </button>
+
+    <div id="message"></div>
+
+</div>
+
+<div class="review">
+Learn about body parts, senses, tastes, healthy habits and more!
+</div>
+
+<footer>
+🎉 Keep practising to become a Body Master!
+</footer>
+
+</div>
+
+<script src="ch04_amazing_body_01__question_list.js"></script>
+
+<script>
+
+let score = 0;
+let completedCount = 0;
+let currentQuestion = null;
+let remainingQuestions = [];
+
+/* -----------------------------
+   SHUFFLE (Fisher-Yates)
+----------------------------- */
+
+function shuffle(array){
+
+    const arr = [...array];
+
+    for(let i = arr.length - 1; i > 0; i--){
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [arr[i], arr[j]] =
+        [arr[j], arr[i]];
+    }
+
+    return arr;
+}
+
+/* -----------------------------
+   START GAME
+----------------------------- */
+
+function startGame(){
+
+    if(typeof questions === "undefined"){
+
+        document.getElementById("question")
+            .innerHTML =
+            "❌ Unable to load question_list.js";
+
+        return;
+    }
+
+    score = 0;
+    completedCount = 0;
+
+    document.getElementById("score")
+        .innerText = score;
+
+    remainingQuestions =
+        shuffle(questions);
+
+    document.getElementById("giveUpBtn")
+        .style.display = "inline-block";
+
+    updateBadge();
+    updateProgress();
+
+    loadQuestion();
+}
+
+/* -----------------------------
+   LOAD QUESTION
+----------------------------- */
+
+function loadQuestion(){
+
+    if(remainingQuestions.length === 0){
+
+        showCompleteScreen();
+        return;
+    }
+
+    currentQuestion =
+        remainingQuestions.pop();
+
+    document.getElementById("question")
+        .textContent =
+        currentQuestion.q;
+
+    document.getElementById("message")
+        .innerHTML = "";
+
+    document.getElementById("giveUpBtn")
+        .disabled = false;
+
+    const optionsDiv =
+        document.getElementById("options");
+
+    optionsDiv.innerHTML = "";
+
+    const options =
+        currentQuestion.o ||
+        currentQuestion.options;
+
+    shuffle(options).forEach(option=>{
+
+        const btn =
+            document.createElement("button");
+
+        btn.className = "option";
+
+        btn.innerText = option;
+
+        btn.onclick = ()=>{
+
+            checkAnswer(btn, option);
+        };
+
+        optionsDiv.appendChild(btn);
+    });
+
+    updateProgress();
+}
+
+/* -----------------------------
+   DISABLE OPTION BUTTONS
+----------------------------- */
+
+function disableAnswerButtons(){
+
+    document
+        .querySelectorAll("#options .option")
+        .forEach(btn=>{
+
+            btn.disabled = true;
+        });
+
+    document.getElementById("giveUpBtn")
+        .disabled = true;
+}
+
+/* -----------------------------
+   CHECK ANSWER
+----------------------------- */
+
+function checkAnswer(button, choice){
+
+    const answer =
+        currentQuestion.a ||
+        currentQuestion.answer;
+
+    if(choice === answer){
+
+        button.classList.add("correct");
+
+        document.getElementById("message")
+            .innerHTML =
+            "🎉 Correct! Great job!";
+
+        score += 10;
+
+        completedCount++;
+
+        document.getElementById("score")
+            .innerText = score;
+
+        updateBadge();
+        updateProgress();
+
+        disableAnswerButtons();
+
+        setTimeout(loadQuestion, 1500);
+    }
+    else{
+
+        button.classList.add("wrong");
+
+        button.disabled = true;
+
+        document.getElementById("message")
+            .innerHTML =
+            "🤔 Not quite. Try again!";
+    }
+}
+
+/* -----------------------------
+   GIVE UP
+----------------------------- */
+
+function giveUp(){
+
+    const answer =
+        currentQuestion.a ||
+        currentQuestion.answer;
+
+    const buttons =
+        document.querySelectorAll(
+            "#options .option"
+        );
+
+    buttons.forEach(btn=>{
+
+        btn.disabled = true;
+
+        if(btn.innerText === answer){
+
+            btn.classList.add("correct");
+        }
+    });
+
+    document.getElementById("giveUpBtn")
+        .disabled = true;
+
+    document.getElementById("message")
+        .innerHTML =
+        `😅 The correct answer is: <b>${answer}</b>`;
+
+    completedCount++;
+
+    updateProgress();
+
+    setTimeout(loadQuestion, 2500);
+}
+
+/* -----------------------------
+   PROGRESS
+----------------------------- */
+
+function updateProgress(){
+
+    const total =
+        questions.length;
+
+    const percent =
+        (completedCount / total) * 100;
+
+    document.getElementById("progressBar")
+        .style.width =
+        percent + "%";
+
+    document.getElementById("count")
+        .innerText =
+        completedCount +
+        " / " +
+        total;
+}
+
+/* -----------------------------
+   BADGES
+----------------------------- */
+
+function updateBadge(){
+
+    let badge =
+        "🏅 Beginner Explorer";
+
+    if(score >= 100)
+        badge = "🥉 Bronze Explorer";
+
+    if(score >= 250)
+        badge = "🥈 Silver Explorer";
+
+    if(score >= 350)
+        badge = "🥇 Gold Explorer";
+
+    if(score >= 450)
+        badge = "👑 Body Master";
+
+    document.getElementById("badge")
+        .innerHTML =
+        badge;
+}
+
+/* -----------------------------
+   COMPLETE SCREEN
+----------------------------- */
+
+function showCompleteScreen(){
+
+    document.getElementById("question")
+        .innerHTML =
+        "🎉 Amazing! You completed all vocabulary questions!";
+
+    document.getElementById("message")
+        .innerHTML =
+        `
+        ⭐ Final Score: ${score}<br>
+        📚 Questions Completed: ${questions.length}
+        `;
+
+    document.getElementById("giveUpBtn")
+        .style.display = "none";
+
+    document.getElementById("options")
+        .innerHTML =
+        `
+        <button
+            class="option play-again"
+            onclick="startGame()">
+            🔄 Play Again
+        </button>
+        `;
+
+    document.getElementById("progressBar")
+        .style.width = "100%";
+}
+
+/* -----------------------------
+   GIVE UP BUTTON
+----------------------------- */
+
+document
+    .getElementById("giveUpBtn")
+    .addEventListener(
+        "click",
+        giveUp
+    );
+
+/* -----------------------------
+   START WHEN PAGE LOADS
+----------------------------- */
+
+window.addEventListener(
+    "load",
+    startGame
+);
+
+</script>
+
+</body>
+</html>
