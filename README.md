@@ -3,6 +3,8 @@
 ## P.1
 
 
+
+
 ### Chinese
 
 [ch5_passages_01.html](./p1/chinese/ch5_passages_01.html)
@@ -11,6 +13,8 @@
 
 
 ### English
+
+[spelling_game_01__dictation_1_greeting.html](./p1/english/spelling_game_01__dictation_1_greeting.html)
 
 [spelling_game_01__months.html](./p1/english/spelling_game_01__months.html)
 
@@ -25,4 +29,5 @@
 ### Science
 
 [ch04_amazing_body_01.html](./p1/science/ch04_amazing_body_01.html)
+
 
