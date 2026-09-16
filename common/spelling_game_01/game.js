@@ -7,297 +7,347 @@ let selectedCells = [];
 let gridData = [];
 let gridSize = 0;
 
-function startGame(){
-  currentIndex = 0;
-  document.getElementById("gameArea").style.display = "block";
-  loadQuestion();
+const synth = window.speechSynthesis;
+
+function startGame() {
+    currentIndex = 0;
+    document.getElementById("gameArea").style.display = "block";
+    loadQuestion();
 }
 
-function loadQuestion(){
+function loadQuestion() {
 
-  if(currentIndex >= wordList.length){
+    if (currentIndex >= wordList.length) {
 
-      document.getElementById("question").innerHTML =
-          "🎉 Congratulations!";
+        document.getElementById("question").innerHTML =
+            "🎉 Congratulations!";
 
-      document.getElementById("message").innerHTML =
-          "You completed all wordList!";
+        document.getElementById("message").innerHTML =
+            "You completed all wordList!";
 
-      document.getElementById("grid").innerHTML = "";
+        document.getElementById("grid").innerHTML = "";
 
-      return;
-  }
 
-  currentWord = wordList[currentIndex];
+        return;
+    }
 
-  answer = "";
-  selectedCells = [];
+    currentWord = wordList[currentIndex];
 
-  document.getElementById("selected").textContent = "";
-  document.getElementById("message").textContent = "";
-  document.getElementById("retryPanel").style.display = "none";
+    answer = "";
+    selectedCells = [];
 
-  updateProgress();
-  updateQuestion();
+    document.getElementById("selected").textContent = "";
+    document.getElementById("message").textContent = "";
+    document.getElementById("retryPanel").style.display = "none";
 
-  generateGrid(currentWord);
+    updateProgress();
+    updateQuestion();
+
+    generateGrid(currentWord);
+
+    setTimeout(() => {
+        speakCurrentWord();
+    }, 300);
 }
 
-function updateProgress(){
+function updateProgress() {
 
-  document.getElementById("progress").innerHTML =
-      `📈 Progress: ${currentIndex + 1} / ${wordList.length}`;
+    document.getElementById("progress").innerHTML =
+        `📈 Progress: ${currentIndex + 1} / ${wordList.length}`;
 }
 
-function updateQuestion(){
-  var question = computeQuestionFromIndexAndWord(currentIndex, currentWord); 
-  document.getElementById("question").innerHTML = question;
+function updateQuestion() {
+    var question = computeQuestionFromIndexAndWord(currentIndex, currentWord);
+    if (question != null) {
+        document.getElementById("question").innerHTML = question;
+    }
 }
 
-function clearSelection(){
+function speakCurrentWord() {
+    speechSynthesis.cancel();
+    
+    const word = currentWord;
 
-  answer = "";
-  selectedCells = [];
+    setTimeout(() => {
 
-  document.querySelectorAll(".cell").forEach(c=>{
-      c.classList.remove("selected");
-  });
+        const utterance =
+            new SpeechSynthesisUtterance(word);
 
-  document.getElementById("selected").textContent = "";
+        utterance.lang = "en-US";
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+
+        speechSynthesis.speak(utterance);
+
+    }, 150);
 }
 
-function retryQuestion(){
+function clearSelection() {
 
-  clearSelection();
+    answer = "";
+    selectedCells = [];
 
-  document.getElementById("retryPanel").style.display = "none";
-  document.getElementById("message").textContent = "";
+    document.querySelectorAll(".cell").forEach(c => {
+        c.classList.remove("selected");
+    });
+
+    document.getElementById("selected").textContent = "";
 }
 
-function giveUp(){
+function retryQuestion() {
 
-  document.getElementById("message").style.color = "#f44336";
+    clearSelection();
 
-  document.getElementById("message").innerHTML =
-      `💡 Answer: <b>${currentWord.toUpperCase()}</b>`;
-
-  document.getElementById("retryPanel").style.display = "none";
-
-  setTimeout(()=>{
-      currentIndex++;
-      loadQuestion();
-  },2000);
+    document.getElementById("retryPanel").style.display = "none";
+    document.getElementById("message").textContent = "";
 }
 
-function submitAnswer(){
+function giveUp() {
 
-  if(answer.toLowerCase() === currentWord){
+    document.getElementById("message").style.color = "#f44336";
 
-      document.getElementById("message").style.color =
-          "#2e7d32";
+    document.getElementById("message").innerHTML =
+        `💡 Answer: <b>${currentWord.toUpperCase()}</b>`;
 
-      document.getElementById("message").innerHTML =
-          "✅ Correct!";
+    document.getElementById("retryPanel").style.display = "none";
 
-      setTimeout(()=>{
-          currentIndex++;
-          loadQuestion();
-      },800);
-
-  }else{
-
-      document.getElementById("message").style.color =
-          "#d32f2f";
-
-      document.getElementById("message").innerHTML =
-          `❌ Incorrect: ${answer.toUpperCase()}`;
-
-      document.getElementById("retryPanel").style.display =
-          "block";
-  }
+    setTimeout(() => {
+        currentIndex++;
+        loadQuestion();
+    }, 2000);
 }
 
-function randomLetter(){
+function submitAnswer() {
 
-  return String.fromCharCode(
-      65 + Math.floor(Math.random()*26)
-  );
+    if (answer.toLowerCase() === currentWord.toLowerCase()) {
+
+        document.getElementById("message").style.color =
+            "#2e7d32";
+
+        document.getElementById("message").innerHTML =
+            "✅ Correct!";
+
+        setTimeout(() => {
+            currentIndex++;
+            loadQuestion();
+        }, 800);
+
+    } else {
+
+        document.getElementById("message").style.color =
+            "#d32f2f";
+
+        document.getElementById("message").innerHTML =
+            `❌ Incorrect: ${answer.toUpperCase()}`;
+
+        document.getElementById("retryPanel").style.display =
+            "block";
+    }
 }
 
-function generateGrid(word){
+function randomLetter() {
 
-  gridSize = Math.floor(Math.sqrt(word.length)) + 1;
-
-  gridData = [];
-
-  for(let r=0;r<gridSize;r++){
-
-      gridData.push([]);
-
-      for(let c=0;c<gridSize;c++){
-
-          gridData[r][c] = "";
-      }
-  }
-
-  const path = createWordPath(word.length);
-
-  for(let i=0;i<word.length;i++){
-
-      let pos = path[i];
-
-      gridData[pos.r][pos.c] =
-          word[i].toUpperCase();
-  }
-
-  for(let r=0;r<gridSize;r++){
-
-      for(let c=0;c<gridSize;c++){
-
-          if(gridData[r][c] === ""){
-
-              gridData[r][c] = randomLetter();
-          }
-      }
-  }
-
-  renderGrid();
+    return String.fromCharCode(
+        65 + Math.floor(Math.random() * 26)
+    );
 }
 
-function createWordPath(length){
+function generateGrid(word) {
 
-  const edgeCells = [];
+    gridSize = Math.floor(Math.sqrt(word.length)) + 1;
 
-  for(let r=0;r<gridSize;r++){
+    gridData = [];
 
-      for(let c=0;c<gridSize;c++){
+    for (let r = 0; r < gridSize; r++) {
 
-          if(
-              r === 0 ||
-              c === 0 ||
-              r === gridSize-1 ||
-              c === gridSize-1
-          ){
-              edgeCells.push({r,c});
-          }
-      }
-  }
+        gridData.push([]);
 
-  const start =
-      edgeCells[
-          Math.floor(Math.random()*edgeCells.length)
-      ];
+        for (let c = 0; c < gridSize; c++) {
 
-  const path = [start];
+            gridData[r][c] = "";
+        }
+    }
 
-  const used = new Set([
-      `${start.r},${start.c}`
-  ]);
+    const path = createWordPath(word.length);
 
-  while(path.length < length){
+    for (let i = 0; i < word.length; i++) {
 
-      const current = path[path.length-1];
+        let pos = path[i];
 
-      const nextOptions = [];
+        gridData[pos.r][pos.c] =
+            word[i].toUpperCase();
+    }
 
-      for(let dr=-1; dr<=1; dr++){
+    for (let r = 0; r < gridSize; r++) {
 
-          for(let dc=-1; dc<=1; dc++){
+        for (let c = 0; c < gridSize; c++) {
 
-              if(dr===0 && dc===0) continue;
+            if (gridData[r][c] === "") {
 
-              const nr = current.r + dr;
-              const nc = current.c + dc;
+                gridData[r][c] = randomLetter();
+            }
+        }
+    }
 
-              const key = `${nr},${nc}`;
-
-              if(
-                  nr >= 0 &&
-                  nr < gridSize &&
-                  nc >= 0 &&
-                  nc < gridSize &&
-                  !used.has(key)
-              ){
-                  nextOptions.push({
-                      r:nr,
-                      c:nc
-                  });
-              }
-          }
-      }
-
-      if(nextOptions.length === 0){
-
-          return createWordPath(length);
-      }
-
-      const next =
-          nextOptions[
-              Math.floor(Math.random()*nextOptions.length)
-          ];
-
-      path.push(next);
-
-      used.add(`${next.r},${next.c}`);
-  }
-
-  return path;
+    renderGrid();
 }
 
-function renderGrid(){
+function createWordPath(length) {
 
-  const grid = document.getElementById("grid");
+    const edgeCells = [];
 
-  grid.innerHTML = "";
+    for (let r = 0; r < gridSize; r++) {
 
-  grid.style.gridTemplateColumns =
-      `repeat(${gridSize}, 60px)`;
+        for (let c = 0; c < gridSize; c++) {
 
-  for(let r=0;r<gridSize;r++){
+            if (
+                r === 0 ||
+                c === 0 ||
+                r === gridSize - 1 ||
+                c === gridSize - 1
+            ) {
+                edgeCells.push({ r, c });
+            }
+        }
+    }
 
-      for(let c=0;c<gridSize;c++){
+    const start =
+        edgeCells[
+        Math.floor(Math.random() * edgeCells.length)
+        ];
 
-          const cell =
-              document.createElement("div");
+    const path = [start];
 
-          cell.className = "cell";
+    const used = new Set([
+        `${start.r},${start.c}`
+    ]);
 
-          cell.textContent =
-              gridData[r][c];
+    while (path.length < length) {
 
-          cell.dataset.row = r;
-          cell.dataset.col = c;
+        const current = path[path.length - 1];
 
-          cell.onclick = function(){
+        const nextOptions = [];
 
-              if(cell.classList.contains("selected")){
-                  return;
-              }
+        for (let dr = -1; dr <= 1; dr++) {
 
-              cell.classList.add("selected");
+            for (let dc = -1; dc <= 1; dc++) {
 
-              selectedCells.push({
-                  row:r,
-                  col:c
-              });
+                if (dr === 0 && dc === 0) continue;
 
-              answer += cell.textContent.toLowerCase();
+                const nr = current.r + dr;
+                const nc = current.c + dc;
 
-              document.getElementById("selected")
-                  .textContent =
-                  answer.toUpperCase();
-          };
+                const key = `${nr},${nc}`;
 
-          grid.appendChild(cell);
-      }
-  }
+                if (
+                    nr >= 0 &&
+                    nr < gridSize &&
+                    nc >= 0 &&
+                    nc < gridSize &&
+                    !used.has(key)
+                ) {
+                    nextOptions.push({
+                        r: nr,
+                        c: nc
+                    });
+                }
+            }
+        }
+
+        if (nextOptions.length === 0) {
+
+            return createWordPath(length);
+        }
+
+        const next =
+            nextOptions[
+            Math.floor(Math.random() * nextOptions.length)
+            ];
+
+        path.push(next);
+
+        used.add(`${next.r},${next.c}`);
+    }
+
+    return path;
+}
+
+function renderGrid() {
+
+    const grid = document.getElementById("grid");
+
+    grid.innerHTML = "";
+
+    grid.style.gridTemplateColumns =
+        `repeat(${gridSize}, 60px)`;
+
+    for (let r = 0; r < gridSize; r++) {
+
+        for (let c = 0; c < gridSize; c++) {
+
+            const cell =
+                document.createElement("div");
+
+            cell.className = "cell";
+
+            cell.textContent =
+                gridData[r][c];
+
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+
+            cell.onclick = function(){
+
+                const row = parseInt(cell.dataset.row);
+                const col = parseInt(cell.dataset.col);
+            
+                const index = selectedCells.findIndex(
+                    item => item.row === row && item.col === col
+                );
+            
+                // Already selected -> unselect
+                if(index >= 0){
+            
+                    selectedCells.splice(index, 1);
+            
+                    cell.classList.remove("selected");
+            
+                }else{
+            
+                    selectedCells.push({
+                        row: row,
+                        col: col,
+                        letter: cell.textContent
+                    });
+            
+                    cell.classList.add("selected");
+                }
+            
+                rebuildAnswer();
+            };
+
+            grid.appendChild(cell);
+        }
+    }
+}
+    
+function rebuildAnswer(){
+
+    answer = "";
+
+    selectedCells.forEach(item => {
+        answer += item.letter.toLowerCase();
+    });
+
+    document.getElementById("selected").textContent =
+        answer.toUpperCase();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.title = `Spelling game ${wordListName}`;
-  document.body.insertAdjacentHTML(
-      "beforeend",
-      `
+    document.title = `Spelling game ${wordListName}`;
+    document.body.insertAdjacentHTML(
+        "beforeend",
+        `
 
       <h1>Spelling game ${wordListName}</h1>
       
@@ -309,6 +359,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="card">
               <div id="question"></div>
+
+            <button
+                class="btn-blue"
+                onclick="speakCurrentWord()">
+
+                🔊 Play Word
+            </button>
+
           </div>
 
           <div class="card">
@@ -344,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       </div>
       `
-  );
+    );
 
-  startGame(wordList);
+    startGame(wordList);
 });
