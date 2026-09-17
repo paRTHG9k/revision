@@ -2,9 +2,6 @@
 
 ## P.1
 
-
-
-
 ### Chinese
 
 [ch5_passages_01.html](./p1/chinese/ch5_passages_01.html)
@@ -20,6 +17,8 @@
 
 [spelling_game_01__numbers_1_20.html](./p1/english/spelling_game_01__numbers_1_20.html)
 
+[word_list_with_phonics__dictation_1_greeting.html](./p1/english/word_list_with_phonics__dictation_1_greeting.html)
+
 
 ### Math
 
@@ -29,5 +28,4 @@
 ### Science
 
 [ch04_amazing_body_01.html](./p1/science/ch04_amazing_body_01.html)
-
 

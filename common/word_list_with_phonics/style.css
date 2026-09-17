@@ -1,0 +1,156 @@
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:16px;
+  font-family:Arial,sans-serif;
+  background:#f5f7fb;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.section{
+  margin-bottom:30px;
+}
+
+.section-title{
+  background:#4dabf7;
+  color:white;
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:1.2rem;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.sentence{
+  font-size:1.3rem;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.word{
+  margin-bottom:20px;
+}
+
+.word-name{
+  font-size:1rem;
+  font-weight:bold;
+  margin-bottom:8px;
+  color:#444;
+}
+
+.phonics-row{
+  position:relative;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:4px;
+  overflow-x:auto;
+  padding-bottom:50px;
+}
+
+.chunk{
+  min-width:30px;
+  padding:6px 8px;
+  border-radius:8px;
+  text-align:center;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  flex-shrink:0;
+}
+
+.default{
+  background:#868e96;
+}
+
+.vowel-team{
+  background:#4dabf7;
+}
+
+.blend{
+  background:#845ef7;
+}
+
+.digraph{
+  background:#20c997;
+}
+
+.suffix{
+  background:#f59f00;
+}
+
+.magic{
+  background:#ff6b6b;
+}
+
+.silent{
+  border:2px dashed white;
+  opacity:.8;
+}
+.short-vowel{
+  background:#ff922b;
+}
+
+/* Magic E bracket */
+
+.magic-bracket{
+  position:absolute;
+  height:14px;
+
+  border-left:3px solid #ff6b6b;
+  border-right:3px solid #ff6b6b;
+  border-bottom:3px solid #ff6b6b;
+
+  border-bottom-left-radius:10px;
+  border-bottom-right-radius:10px;
+}
+
+.magic-label{
+  position:absolute;
+  color:#ff6b6b;
+  font-size:12px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:20px;
+}
+
+.legend span{
+  color:white;
+  border-radius:8px;
+  padding:4px 8px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+@media(max-width:480px){
+
+  .sentence{
+      font-size:1.1rem;
+  }
+
+  .chunk{
+      font-size:15px;
+      min-width:28px;
+  }
+}
