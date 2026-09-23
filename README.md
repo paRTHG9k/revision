@@ -3,6 +3,7 @@
 ## P.1
 
 
+
 ### Chinese
 
 [ch5_passages_01.html](./p1/chinese/ch5_passages_01.html)
@@ -25,6 +26,13 @@
 [word_list_with_phonics__dictation_1_greeting.html](./p1/english/word_list_with_phonics__dictation_1_greeting.html)
 
 
+### Humanities
+
+[spelling_card_02__vocab_list_02.html](./p1/humanities/spelling_card_02__vocab_list_02.html)
+
+[spelling_game_01__vocab_list_02.html](./p1/humanities/spelling_game_01__vocab_list_02.html)
+
+
 ### Math
 
 [calculations.html](./p1/math/calculations.html)
@@ -33,4 +41,8 @@
 ### Science
 
 [ch04_amazing_body_01.html](./p1/science/ch04_amazing_body_01.html)
+
+
+
+
 

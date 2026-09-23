@@ -1,0 +1,50 @@
+
+#container {
+  font-family: "Yomogi", cursive;
+  /* font-family: "Playpen Sans", cursive; */
+}
+
+.paper {
+  border: 1px solid #ccc;
+  width: 283mm;
+  height: 180mm;
+  padding: 5mm;
+  border: solid 1px #ddd;
+  break-inside: avoid;
+  page-break-inside: avoid; 
+}
+
+.row {
+  display: flex;
+  flex-direction: row; /* This is the default setting */
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 0.5cm;
+  text-align: center;
+  width: 5.8cm;
+  height: 3.5cm;
+  position: relative;
+}
+.card .span1 {
+  left: 0.5cm;
+  font-size: 22pt;
+  position: absolute;
+  left: 0cm;
+  top: 1.5cm;
+  width: 100%;
+  text-align: center;
+}
+.card .span2 {
+  font-size: 10pt;
+  color: #999;
+  position: absolute;
+  left: 0cm;
+  top: 0.5cm;
+  width: 100%;
+  text-align: center;
+}
+.card:last-child {
+  margin-right: 0;     /* remove margin on last card in row */
+}
