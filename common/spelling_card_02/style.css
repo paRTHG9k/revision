@@ -1,7 +1,10 @@
 
+
+
 #container {
-  font-family: "Yomogi", cursive;
-  /* font-family: "Playpen Sans", cursive; */
+  /* font-family: "Yomogi", cursive; */
+  /* font-family: "Playpen Sans", cursive; */ 
+  font-family: "Short Stack", cursive; 
 }
 
 .paper {
@@ -21,20 +24,22 @@
 
 .card {
   border: 1px solid #ccc;
-  padding: 0.5cm;
   text-align: center;
-  width: 5.8cm;
-  height: 3.5cm;
+  width: 7.0cm;
+  height: 4.5cm;
   position: relative;
 }
 .card .span1 {
-  left: 0.5cm;
+  left: 0.25cm;
+  top: 1.5cm;
   font-size: 22pt;
   position: absolute;
-  left: 0cm;
-  top: 1.5cm;
-  width: 100%;
+  width: 6.5cm;
   text-align: center;
+}
+.card .span1-chin{
+  font-size: 36pt;
+  font-family: "Noto Serif HK", serif;
 }
 .card .span2 {
   font-size: 10pt;
@@ -44,6 +49,9 @@
   top: 0.5cm;
   width: 100%;
   text-align: center;
+}
+.card .span2-chin{
+  font-family: "Noto Serif HK", serif;
 }
 .card:last-child {
   margin-right: 0;     /* remove margin on last card in row */
