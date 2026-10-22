@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Labels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet">
+    <style>
+        /* General Page Setup */
+        body {
+            margin: 0;
+            padding: 20px;
+            /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+            font-family: "Playpen Sans", cursive;
+            background-color: #fcfcfc;
+            color: #333;
+        }
+
+        /* Control Panel Styles (Hidden when printing) */
+        .control-panel {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            border: 1px solid #eee;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .control-group input[type="number"], 
+        .control-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .control-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .print-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .print-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Layout Container for Generated Labels */
+        .label-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 4cm);
+            gap: 15px;
+            max-width: 100%;
+            justify-content: center;
+        }
+
+        /* Exact Dimensioned Label Component (4cm * 1cm) */
+        .label {
+            width: 4cm;
+            height: 1cm;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #333333;
+            text-align: center;
+            border: 1px dashed rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px;
+            overflow: hidden;
+        }
+
+        /* Print Settings optimization */
+        @media print {
+            .control-panel {
+                display: none !important; /* Hide settings completely on print */
+            }
+            body {
+                background-color: #ffffff;
+                padding: 0;
+            }
+            .label-grid {
+                gap: 10px; /* Tighter layout for paper cutting */
+            }
+            .label {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Interactive Configuration Panel -->
+    <div class="control-panel">
+        <h2 style="margin-top: 0; font-size: 18px;">Label Configuration</h2>
+        
+        <div class="control-group">
+            <label for="subjectList">Subjects List (One per line):</label>
+            <textarea id="subjectList">Chinese
+English
+Mathematics
+Humanities
+Science
+Biblical Knowledge
+Visual Art
+Music
+P.E.
+I.T.
+French
+PTH
+Phonics
+ECA
+Others</textarea>
+        </div>
+
+        <div class="control-group">
+            <label for="repeatCount">Number of copies per subject:</label>
+            <input type="number" id="repeatCount" value="2" min="1" max="50">
+        </div>
+
+        <button class="print-btn" onclick="window.print()">Print Labels / Save to PDF</button>
+    </div>
+
+    <!-- Target Output Grid -->
+    <div id="labelGrid" class="label-grid"></div>
+
+    <script>
+        // Array of unique pastel hex colors to cleanly loop over
+        const pastelColors = [
+            '#FFB7B2', '#FFDAC1', '#FFE5B4', '#FFF9A6', '#E2F0CB', 
+            '#B5EAD7', '#C7CEEA', '#E8AEFF', '#FFC6FF', '#BDB2FF', 
+            '#9BF6FF', '#A0C4FF', '#CAFFBF', '#FDFFB6', '#D8E2DC',
+            '#FFCAD4', '#B3E5FC', '#D1C4E9', '#C8E6C9', '#FFECB3'
+        ];
+
+        const subjectListInput = document.getElementById('subjectList');
+        const repeatCountInput = document.getElementById('repeatCount');
+        const labelGrid = document.getElementById('labelGrid');
+
+        function generateLabels() {
+            // Clear existing output grid
+            labelGrid.innerHTML = '';
+
+            // Split raw lines, trim whitespace, remove completely empty items
+            const subjects = subjectListInput.value
+                .split('\n')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+
+            const count = parseInt(repeatCountInput.value, 10) || 1;
+
+            // Generate label boxes dynamically
+            subjects.forEach((subject, index) => {
+                // Dynamically wrap color selections if list lengths outgrow color palette sizes
+                const backgroundColor = pastelColors[index % pastelColors.length];
+
+                for (let i = 0; i < count; i++) {
+                    const labelDiv = document.createElement('div');
+                    labelDiv.className = 'label';
+                    labelDiv.style.backgroundColor = backgroundColor;
+                    labelDiv.textContent = subject;
+                    labelGrid.appendChild(labelDiv);
+                }
+            });
+        }
+
+        // Attach state triggers for immediate live preview adjustments
+        subjectListInput.addEventListener('input', generateLabels);
+        repeatCountInput.addEventListener('input', generateLabels);
+
+        // Initial launch generation
+        generateLabels();
+    </script>
+
+</body>
+</html>
