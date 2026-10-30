@@ -10,6 +10,13 @@ an ear
 hair
 a nose
 a mouth
+my father
+my mother
+my sister
+my brother 
+my family 
+a cat
+a toy
 `, 
   'K1 中文': `
 男
@@ -21,8 +28,7 @@ a mouth
 小
 眼
 口
+耳
+鼻
 `, 
-
-
-
 }
