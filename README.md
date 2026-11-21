@@ -6,7 +6,7 @@
 
 ### K1
 
-[flash_cards.html](./k1/k1/flash_cards.html)
+[flash_cards.html](./k1/flash_cards.html)
 
 
 
