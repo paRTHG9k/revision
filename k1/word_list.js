@@ -17,6 +17,12 @@ my brother
 my family 
 a cat
 a toy
+bread
+juice
+cookies
+milk
+an ice cream 
+rice
 `, 
   'K1 中文': `
 男
